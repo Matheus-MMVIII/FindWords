@@ -176,6 +176,10 @@ Direction Logic
         return boardLines;
     }
 
+    public static int getBoardSize() {
+        return boardSize;
+    }
+
     public static char randomWord() {
         return lyrics[random.nextInt(26)];
     }
