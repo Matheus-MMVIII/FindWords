@@ -8,15 +8,15 @@ import java.util.Collections;
 
 public class FindWords {
     private final static int boardSize = 16;
+    private final static String alphabet = "abcdefghijklmnopqrstuvwxyz";
     public static char[] lyrics;
     public static char[][] board = new char[boardSize][boardSize];
     public static boolean[][] boardUsed = new boolean[boardSize][boardSize];
     public static List<String> words = new ArrayList<>();
     public static Random random = new Random();
 
-    public static void main(String[] args) throws IOException {
+    public FindWords() throws IOException {
         words = generateWords();
-        String alphabet = "abcdefghijklmnopqrstuvwxyz";
         lyrics = alphabet.toCharArray();
         generateBoard();
         printBoard();
@@ -152,6 +152,28 @@ Direction Logic
             }
             System.out.println(" ");
         }
+    }
+
+    public static String getBoard() {
+        String boardString = "";
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                boardString += " " + board[i][j] + " ";
+            }
+        }
+        return boardString;
+    }
+
+    public static List<String> getBoardLines() {
+        List<String> boardLines = new ArrayList<>();
+        for (int i = 0; i < board.length; i++) {
+            String boardLine = "";
+            for (int j = 0; j < board[i].length; j++) {
+                boardLine += " " + board[i][j] + " ";
+            }
+            boardLines.add(boardLine);
+        }
+        return boardLines;
     }
 
     public static char randomWord() {
