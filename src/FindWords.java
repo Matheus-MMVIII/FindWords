@@ -7,8 +7,8 @@ import java.nio.file.Path;
 import java.util.Collections;
 
 public class FindWords {
-    private final int boardSize = 16;
-    private final String alphabet = "abcdefghijklmnopqrstuvwxyz";
+    private final int boardSize = 20;
+    private final String alphabet = "abcdefghijklmnopqrstuvwxyzáàâãçéèêíìîóòôõúùû\n";
     public char[] lyrics;
     public char[][] board = new char[boardSize][boardSize];
     public boolean[][] boardUsed = new boolean[boardSize][boardSize];
@@ -17,6 +17,7 @@ public class FindWords {
     public Random random = new Random();
 
     public FindWords() throws IOException {
+        chosenWords = new ArrayList<>();
         words = generateWords();
         lyrics = alphabet.toCharArray();
         generateBoard();

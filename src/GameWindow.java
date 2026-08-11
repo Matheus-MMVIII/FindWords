@@ -1,3 +1,4 @@
+import java.util.List;
 import java.awt.event.*;
 import javax.swing.*;
 import java.awt.*;
@@ -9,22 +10,24 @@ public class GameWindow extends Canvas implements Runnable {
 
     private boolean running = true;
     private final FindWords findWords;
-    protected int startX = 10;
-    protected int startY = 40;
+    protected int startX = 550;
+    protected int startY = 80;
     protected int cellSize = 40;
     protected int clickX = -1, clickY = -1;
     protected final char[][] board;
     protected final boolean[][] selected;
     protected final Color[][] colors;
+    protected final List<String> words;
 
     public GameWindow() throws IOException {
         this.findWords = new FindWords();
         board = findWords.getBoardChars();
         selected = new boolean[board.length][board[0].length];
         colors = new Color[board.length][board[0].length];
+        words = findWords.getChosenWords();
         JFrame frame = new JFrame("Find Words");
 
-        setPreferredSize(new Dimension(1000, 800));
+        setPreferredSize(new Dimension(1920, 1060));
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
@@ -96,6 +99,11 @@ public class GameWindow extends Canvas implements Runnable {
             g.setColor(Color.BLACK);
             g.fillRect(0, 0, getWidth(), getHeight());
             g.setFont(font);
+
+            g.setColor(Color.WHITE);
+            for (int i = 0; i < words.size(); i++) {
+                g.drawString(words.get(i), 10, 30*i+40);
+            }
 
             FontMetrics fm = g.getFontMetrics();
 
