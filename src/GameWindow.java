@@ -82,47 +82,6 @@ public class GameWindow extends Canvas implements Runnable {
                 }
             }
         });
-
-        addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                int mouseX = e.getX();
-                int mouseY = e.getY();
-
-                int col = (mouseX - startX) / cellSize;
-                int row = (mouseY - startY) / cellSize;
-
-                if (clickX != -1 && clickY != -1) {
-                    int dx = Integer.compare(col, clickX);
-                    int dy = Integer.compare(row, clickY);
-
-                    int deltaX = Math.abs(col - clickX);
-                    int deltaY = Math.abs(row - clickY);
-
-                    if (deltaX == 0 || deltaY == 0 || deltaX == deltaY) {
-
-                        boolean newState = !selected[clickY][clickX];
-
-                        int x = clickX;
-                        int y = clickY;
-                        Color color = getRandomColor();
-
-                        while (true) {
-                            selected[y][x] = newState;
-                            colors[y][x] = color;
-
-                            if (x == col && y == row) {
-                                break;
-                            }
-
-                            x += dx;
-                            y += dy;
-                        }
-                    }
-
-                }
-            }
-        });
     }
 
     @Override

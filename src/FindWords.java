@@ -12,7 +12,8 @@ public class FindWords {
     public char[] lyrics;
     public char[][] board = new char[boardSize][boardSize];
     public boolean[][] boardUsed = new boolean[boardSize][boardSize];
-    public List<String> words = new ArrayList<>();
+    public List<String> words;
+    public List<String> chosenWords;
     public Random random = new Random();
 
     public FindWords() throws IOException {
@@ -127,6 +128,7 @@ Direction Logic
                             board[line][column] = word.charAt(k);
                             boardUsed[line][column] = true;
                         }
+                        chosenWords.add(word);
                         System.out.println(word);
                         words.remove(numWord);
 
@@ -182,6 +184,10 @@ Direction Logic
 
     public int getBoardSize() {
         return boardSize;
+    }
+
+    public List<String> getChosenWords() {
+        return chosenWords;
     }
 
     public char randomWord() {
