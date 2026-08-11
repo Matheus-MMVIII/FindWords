@@ -7,13 +7,13 @@ import java.nio.file.Path;
 import java.util.Collections;
 
 public class FindWords {
-    private final static int boardSize = 16;
-    private final static String alphabet = "abcdefghijklmnopqrstuvwxyz";
-    public static char[] lyrics;
-    public static char[][] board = new char[boardSize][boardSize];
-    public static boolean[][] boardUsed = new boolean[boardSize][boardSize];
-    public static List<String> words = new ArrayList<>();
-    public static Random random = new Random();
+    private final int boardSize = 16;
+    private final String alphabet = "abcdefghijklmnopqrstuvwxyz";
+    public char[] lyrics;
+    public char[][] board = new char[boardSize][boardSize];
+    public boolean[][] boardUsed = new boolean[boardSize][boardSize];
+    public List<String> words = new ArrayList<>();
+    public Random random = new Random();
 
     public FindWords() throws IOException {
         words = generateWords();
@@ -21,7 +21,7 @@ public class FindWords {
         generateBoard();
         printBoard();
     }
-    public static List<String> generateWords() throws IOException {
+    public List<String> generateWords() throws IOException {
         List<String> palavras = Files.readAllLines(Path.of("words.txt"));
         Collections.shuffle(palavras);
         return palavras;
@@ -35,7 +35,7 @@ Direction Logic
     5
     */
 
-    public static void generateBoard() {
+    public void generateBoard() {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
                 if (boardUsed[i][j]) {
@@ -141,7 +141,7 @@ Direction Logic
         }
     }
 
-    public static void printBoard() {
+    public void printBoard() {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
                 System.out.print(" "+board[i][j]+" ");
@@ -154,7 +154,7 @@ Direction Logic
         }
     }
 
-    public static String getBoard() {
+    public String getBoard() {
         String boardString = "";
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
@@ -164,7 +164,7 @@ Direction Logic
         return boardString;
     }
 
-    public static List<String> getBoardLines() {
+    public List<String> getBoardLines() {
         List<String> boardLines = new ArrayList<>();
         for (int i = 0; i < board.length; i++) {
             String boardLine = "";
@@ -176,11 +176,15 @@ Direction Logic
         return boardLines;
     }
 
-    public static int getBoardSize() {
+    public char[][] getBoardChars() {
+        return board;
+    }
+
+    public int getBoardSize() {
         return boardSize;
     }
 
-    public static char randomWord() {
+    public char randomWord() {
         return lyrics[random.nextInt(26)];
     }
 }
