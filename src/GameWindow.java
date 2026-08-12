@@ -10,21 +10,28 @@ public class GameWindow extends Canvas implements Runnable {
 
     private boolean running = true;
     private final FindWords findWords;
-    protected int startX = 550;
-    protected int startY = 80;
-    protected int cellSize = 40;
+    protected Random rand;
+    protected int boardStartX = 550;
+    protected int boardStartY = 80;
+    protected int boardCellSize = 40;
+    protected int listWordsStartX = 10;
+    protected int listWordsStartY = 40;
+    protected int listWordsCellSize = 30;
     protected int clickX = -1, clickY = -1;
     protected final char[][] board;
     protected final boolean[][] selected;
     protected final Color[][] colors;
     protected final List<String> words;
+    protected final boolean[] wordsChange;
 
     public GameWindow() throws IOException {
-        this.findWords = new FindWords();
+        findWords = new FindWords();
+        rand = new Random();
         board = findWords.getBoardChars();
         selected = new boolean[board.length][board[0].length];
         colors = new Color[board.length][board[0].length];
         words = findWords.getChosenWords();
+        wordsChange = new boolean[words.size()];
         JFrame frame = new JFrame("Find Words");
 
         setPreferredSize(new Dimension(1920, 1060));
@@ -44,8 +51,8 @@ public class GameWindow extends Canvas implements Runnable {
                 int mouseX = e.getX();
                 int mouseY = e.getY();
 
-                int col = (mouseX - startX) / cellSize;
-                int row = (mouseY - startY) / cellSize;
+                int col = (mouseX - boardStartX) / boardCellSize;
+                int row = (mouseY - boardStartY) / boardCellSize;
 
                 if (row >= 0 && row < board.length && col >= 0 && col < board[0].length) {
                     if (clickX != -1 && clickY != -1) {
@@ -102,7 +109,10 @@ public class GameWindow extends Canvas implements Runnable {
 
             g.setColor(Color.WHITE);
             for (int i = 0; i < words.size(); i++) {
-                g.drawString(words.get(i), 10, 30*i+40);
+                g.drawString(words.get(i), listWordsStartX, listWordsStartY+listWordsCellSize*i);
+                if (!wordsChange[i]) {
+                    g.drawLine(listWordsStartX, listWordsCellSize*i+listWordsStartY-17+rand.nextInt(18), listWordsStartX+words.get(i).length()*17, listWordsCellSize*i+listWordsStartY-17+rand.nextInt(18));
+                }
             }
 
             FontMetrics fm = g.getFontMetrics();
@@ -110,18 +120,18 @@ public class GameWindow extends Canvas implements Runnable {
             for (int i = 0; i < board.length; i++) {
                 for (int j = 0; j < board[i].length; j++) {
 
-                    int cellX = startX + j * cellSize;
-                    int cellY = startY + i * cellSize;
+                    int cellX = boardStartX + j * boardCellSize;
+                    int cellY = boardStartY + i * boardCellSize;
 
                     if (selected[i][j]) {
                         g.setColor(colors[i][j]);
-                        g.fillRect(cellX, cellY, cellSize, cellSize);
+                        g.fillRect(cellX, cellY, boardCellSize, boardCellSize);
                     }
 
                     g.setColor(Color.WHITE);
 
-                    int textX = cellX + (cellSize - fm.charWidth(board[i][j])) / 2;
-                    int textY = cellY + ((cellSize - fm.getHeight()) / 2) + fm.getAscent();
+                    int textX = cellX + (boardCellSize - fm.charWidth(board[i][j])) / 2;
+                    int textY = cellY + ((boardCellSize - fm.getHeight()) / 2) + fm.getAscent();
 
                     g.drawString(String.valueOf(board[i][j]), textX, textY);
                 }
@@ -141,8 +151,7 @@ public class GameWindow extends Canvas implements Runnable {
     }
 
     public Color getRandomColor() {
-        Random rand = new Random();
-        Color color = new Color(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255));
+        Color color = new Color(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
         return color;
     }
 
