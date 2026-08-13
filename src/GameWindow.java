@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.*;
 import javax.swing.*;
@@ -15,14 +16,15 @@ public class GameWindow extends Canvas implements Runnable {
     protected int boardStartY = 80;
     protected int boardCellSize = 40;
     protected int listWordsStartX = 10;
-    protected int listWordsStartY = 40;
+    protected int listWordsStartY = 30;
     protected int listWordsCellSize = 30;
     protected int clickX = -1, clickY = -1;
     protected final char[][] board;
     protected final boolean[][] selected;
     protected final Color[][] colors;
     protected final List<String> words;
-    protected final boolean[] wordsChange;
+    protected record WordsChange(boolean find, int yStart, int yEnd) {}
+    protected final List<WordsChange> wordsChange;
 
     public GameWindow() throws IOException {
         findWords = new FindWords();
@@ -31,7 +33,10 @@ public class GameWindow extends Canvas implements Runnable {
         selected = new boolean[board.length][board[0].length];
         colors = new Color[board.length][board[0].length];
         words = findWords.getChosenWords();
-        wordsChange = new boolean[words.size()];
+        wordsChange = new ArrayList<>();
+        for (int i = 0; i < words.size(); i++) {
+            wordsChange.add(new WordsChange(false, 0, 0));
+        }
         JFrame frame = new JFrame("Find Words");
 
         setPreferredSize(new Dimension(1920, 1060));
@@ -48,19 +53,22 @@ public class GameWindow extends Canvas implements Runnable {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
+                int windownTableSize = 20;
                 int mouseX = e.getX();
                 int mouseY = e.getY();
 
-                int col = (mouseX - boardStartX) / boardCellSize;
-                int row = (mouseY - boardStartY) / boardCellSize;
+                int colBoard = (mouseX - boardStartX) / boardCellSize;
+                int rowBoard = (mouseY - boardStartY) / boardCellSize;
+                int colListWords = (mouseX - listWordsStartX) / listWordsCellSize;
+                int rowListWords = (mouseY - listWordsStartY+windownTableSize) / listWordsCellSize;
 
-                if (row >= 0 && row < board.length && col >= 0 && col < board[0].length) {
+                if (rowBoard >= 0 && rowBoard < board.length && colBoard >= 0 && colBoard < board[0].length) {
                     if (clickX != -1 && clickY != -1) {
-                        int dx = Integer.compare(col, clickX);
-                        int dy = Integer.compare(row, clickY);
+                        int dx = Integer.compare(colBoard, clickX);
+                        int dy = Integer.compare(rowBoard, clickY);
 
-                        int deltaX = Math.abs(col - clickX);
-                        int deltaY = Math.abs(row - clickY);
+                        int deltaX = Math.abs(colBoard - clickX);
+                        int deltaY = Math.abs(rowBoard - clickY);
 
                         if (deltaX == 0 || deltaY == 0 || deltaX == deltaY) {
 
@@ -74,7 +82,7 @@ public class GameWindow extends Canvas implements Runnable {
                                 selected[y][x] = newState;
                                 colors[y][x] = color;
 
-                                if (x == col && y == row) {
+                                if (x == colBoard && y == rowBoard) {
                                     break;
                                 }
 
@@ -86,8 +94,21 @@ public class GameWindow extends Canvas implements Runnable {
                         clickX = -1;
                         clickY = -1;
                     } else {
-                        clickX = col;
-                        clickY = row;
+                        clickX = colBoard;
+                        clickY = rowBoard;
+                    }
+                }
+
+                if (rowListWords >= 0 && rowListWords < words.size() && colListWords >= 0 && colListWords < 10) {
+                    WordsChange wc = wordsChange.get(rowListWords);
+
+                    if (wc.find) {
+                        wordsChange.set(rowListWords, new WordsChange(false, wc.yStart, wc.yEnd));
+                    } else {
+                        wordsChange.set(
+                                rowListWords,
+                                new WordsChange(true, rand.nextInt(18), rand.nextInt(18))
+                        );
                     }
                 }
             }
@@ -110,8 +131,11 @@ public class GameWindow extends Canvas implements Runnable {
             g.setColor(Color.WHITE);
             for (int i = 0; i < words.size(); i++) {
                 g.drawString(words.get(i), listWordsStartX, listWordsStartY+listWordsCellSize*i);
-                if (!wordsChange[i]) {
-                    g.drawLine(listWordsStartX, listWordsCellSize*i+listWordsStartY-17+rand.nextInt(18), listWordsStartX+words.get(i).length()*17, listWordsCellSize*i+listWordsStartY-17+rand.nextInt(18));
+                if (!wordsChange.isEmpty()) {
+                    WordsChange wordsChanged = wordsChange.get(i);
+                    if (wordsChanged.find) {
+                        g.drawLine(listWordsStartX, listWordsCellSize * i + listWordsStartY - 17 + wordsChanged.yStart, listWordsStartX + words.get(i).length() * 17, listWordsCellSize * i + listWordsStartY - 17 + wordsChanged.yEnd);
+                    }
                 }
             }
 
