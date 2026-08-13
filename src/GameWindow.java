@@ -131,11 +131,13 @@ public class GameWindow extends Canvas implements Runnable {
             g.setColor(Color.WHITE);
             for (int i = 0; i < words.size(); i++) {
                 g.drawString(words.get(i), listWordsStartX, listWordsStartY+listWordsCellSize*i);
-                if (!wordsChange.isEmpty()) {
-                    WordsChange wordsChanged = wordsChange.get(i);
-                    if (wordsChanged.find) {
-                        g.drawLine(listWordsStartX, listWordsCellSize * i + listWordsStartY - 17 + wordsChanged.yStart, listWordsStartX + words.get(i).length() * 17, listWordsCellSize * i + listWordsStartY - 17 + wordsChanged.yEnd);
-                    }
+                WordsChange wc = wordsChange.get(i);
+                if (wc.find) {
+                    g.drawLine(listWordsStartX,
+                            listWordsCellSize * i + listWordsStartY - 17 + wc.yStart,
+                            listWordsStartX + words.get(i).length() * 17,
+                            listWordsCellSize * i + listWordsStartY - 17 + wc.yEnd
+                    );
                 }
             }
 
