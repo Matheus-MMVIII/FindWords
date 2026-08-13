@@ -7,14 +7,15 @@ import java.nio.file.Path;
 import java.util.Collections;
 
 public class FindWords {
-    private final int boardSize = 20;
-    private final String alphabet = "abcdefghijklmnopqrstuvwxyzáàâãçéèêíìîóòôõúùû\n";
-    public char[] lyrics;
-    public char[][] board = new char[boardSize][boardSize];
-    public boolean[][] boardUsed = new boolean[boardSize][boardSize];
-    public List<String> words;
-    public List<String> chosenWords;
-    public Random random = new Random();
+    private static final int boardSize = 20;
+    private static final String alphabet = "abcdefghijklmnopqrstuvwxyzáàâãçéèêíìîóòôõúùû";
+    private static final Random random = new Random();
+
+    private final char[] lyrics;
+    private final char[][] board = new char[boardSize][boardSize];
+    private final boolean[][] boardUsed = new boolean[boardSize][boardSize];
+    private final List<String> words;
+    private final List<String> chosenWords;
 
     public FindWords() throws IOException {
         chosenWords = new ArrayList<>();
