@@ -12,6 +12,7 @@ import java.awt.image.BufferStrategy;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 import java.util.Random;
 
 public class GameWindow extends Canvas implements Runnable {
@@ -28,7 +29,7 @@ public class GameWindow extends Canvas implements Runnable {
     private static final int WORD_LIST_CELL_SIZE = 30;
 
     private static final int WINDOW_TITLE_BAR_HEIGHT = 20;
-    private static final int FRAME_DELAY_MS = 16;
+    private static final int FRAME_DELAY_MS = 16; // +- 60 fps
 
     private boolean running = true;
 
@@ -53,7 +54,8 @@ public class GameWindow extends Canvas implements Runnable {
         board = findWords.getBoardChars();
         selectedCells = new boolean[board.length][board[0].length];
         cellColors = new Color[board.length][board[0].length];
-        selectedWords = findWords.getChosenWords();
+        selectedWords = new ArrayList<>(findWords.getChosenWords());
+        Collections.sort(selectedWords);
 
         wordStatuses = new ArrayList<>();
         for (int i = 0; i < selectedWords.size(); i++) {

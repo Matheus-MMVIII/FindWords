@@ -58,11 +58,11 @@ Direction Logic
                     int deltaColumn = 0;
                     int[] directions = {
                             3,3,3,3,
-                            5,5,5,
-                            1,1,1,
-                            7,7,
+                            5,5,
+                            1,1,
                             2,2,
                             4,4,
+                            7,
                             6,
                             8
                     };
