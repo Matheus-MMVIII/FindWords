@@ -25,9 +25,9 @@ public class FindWords {
         printBoard();
     }
     public List<String> generateWords() throws IOException {
-        List<String> palavras = Files.readAllLines(Path.of("words.txt"));
-        Collections.shuffle(palavras);
-        return palavras;
+        List<String> words = Files.readAllLines(Path.of("words.txt"));
+        Collections.shuffle(words);
+        return words;
     }
     /*
 Direction Logic
