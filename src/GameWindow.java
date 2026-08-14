@@ -1,19 +1,12 @@
-import javax.swing.JFrame;
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Toolkit;
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferStrategy;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Collections;
-import java.util.Random;
 
 public class GameWindow extends Canvas implements Runnable {
 
@@ -33,14 +26,14 @@ public class GameWindow extends Canvas implements Runnable {
 
     private boolean running = true;
 
-    private final FindWords findWords;
+    private FindWords findWords;
     private Random random;
 
-    private final char[][] board;
-    private final boolean[][] selectedCells;
-    private final Color[][] cellColors;
-    private final List<String> selectedWords;
-    private final List<WordStatus> wordStatuses;
+    private char[][] board;
+    private boolean[][] selectedCells;
+    private Color[][] cellColors;
+    private List<String> selectedWords;
+    private List<WordStatus> wordStatuses;
 
     private int selectedColumn = -1;
     private int selectedRow = -1;
@@ -48,23 +41,30 @@ public class GameWindow extends Canvas implements Runnable {
     private record WordStatus(boolean found, int startOffsetY, int endOffsetY) {}
 
     public GameWindow() throws IOException {
-        findWords = new FindWords();
         random = new Random();
-
-        board = findWords.getBoardChars();
-        selectedCells = new boolean[board.length][board[0].length];
-        cellColors = new Color[board.length][board[0].length];
-        selectedWords = new ArrayList<>(findWords.getChosenWords());
-        Collections.sort(selectedWords);
-
-        wordStatuses = new ArrayList<>();
-        for (int i = 0; i < selectedWords.size(); i++) {
-            wordStatuses.add(new WordStatus(false, 0, 0));
-        }
+        resetGame();
 
         JFrame frame = new JFrame("Find Words");
 
         setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
+
+        JButton restartButton = new JButton();
+        restartButton.addActionListener(e -> {
+            try {
+                resetGame();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        restartButton.setBackground(Color.GRAY);
+        restartButton.setSize(100, 50);
+        restartButton.setBorderPainted(false);
+        restartButton.setLocation((int) (WINDOW_WIDTH*0.92), (int) (WINDOW_HEIGHT*0.85));
+        restartButton.setText("New Game");
+        restartButton.setFocusPainted(false);
+
+        frame.add(restartButton);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
@@ -209,6 +209,25 @@ public class GameWindow extends Canvas implements Runnable {
     public Color getRandomColor() {
         Color color = new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
         return color;
+    }
+
+    private void resetGame() throws IOException {
+        findWords = new FindWords();
+
+        board = findWords.getBoardChars();
+        selectedCells = new boolean[board.length][board[0].length];
+        cellColors = new Color[board.length][board[0].length];
+
+        selectedWords = new ArrayList<>(findWords.getChosenWords());
+        Collections.shuffle(selectedWords, random);
+
+        wordStatuses = new ArrayList<>();
+        for (int i = 0; i < selectedWords.size(); i++) {
+            wordStatuses.add(new WordStatus(false, 0, 0));
+        }
+
+        selectedColumn = -1;
+        selectedRow = -1;
     }
 
     public static void main(String[] args) throws IOException {
